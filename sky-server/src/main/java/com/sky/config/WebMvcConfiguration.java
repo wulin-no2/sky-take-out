@@ -16,7 +16,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 /**
- * 配置类，注册web层相关组件
+ * configure class, register web layer components
  */
 @Configuration
 @Slf4j
@@ -26,31 +26,33 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
     /**
-     * 注册自定义拦截器
+     * register customized filter
      *
      * @param registry
      */
     protected void addInterceptors(InterceptorRegistry registry) {
-        log.info("开始注册自定义拦截器...");
+        log.info("start to register customized filter...");
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
     }
 
     /**
-     * 通过knife4j生成接口文档
+     * generate interface document with knife4j
      * @return
      */
     @Bean
     public Docket docket() {
+        log.info("ready to generate interface document..");
         ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("苍穹外卖项目接口文档")
+                .title("sky_project_interface_doc")
                 .version("2.0")
-                .description("苍穹外卖项目接口文档")
+                .description("sky_project_interface_doc")
                 .build();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
                 .select()
+                // the directory we need to scan
                 .apis(RequestHandlerSelectors.basePackage("com.sky.controller"))
                 .paths(PathSelectors.any())
                 .build();
@@ -58,7 +60,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     }
 
     /**
-     * 设置静态资源映射
+     * configure static resources reflection
      * @param registry
      */
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
