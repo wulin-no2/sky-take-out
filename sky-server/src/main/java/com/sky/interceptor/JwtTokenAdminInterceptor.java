@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * jwt令牌校验的拦截器
+ * jwt token interceptor
  */
 @Component
 @Slf4j
@@ -23,7 +23,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
     private JwtProperties jwtProperties;
 
     /**
-     * 校验jwt
+     * validate jwt
      *
      * @param request
      * @param response
@@ -32,25 +32,25 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //判断当前拦截到的是Controller的方法还是其他资源
+        //check if we handled controller method or other resources
         if (!(handler instanceof HandlerMethod)) {
-            //当前拦截到的不是动态方法，直接放行
+            //if we didn't get dynamic method, let go
             return true;
         }
 
-        //1、从请求头中获取令牌
+        //1. get token from request header
         String token = request.getHeader(jwtProperties.getAdminTokenName());
 
-        //2、校验令牌
+        //2. validate token
         try {
-            log.info("jwt校验:{}", token);
+            log.info("jwt validate:{}", token);
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
-            log.info("当前员工id：", empId);
-            //3、通过，放行
+            log.info("employee id：", empId);
+            //3. valid, let go
             return true;
         } catch (Exception ex) {
-            //4、不通过，响应401状态码
+            //4. invalid, return 401 code
             response.setStatus(401);
             return false;
         }
