@@ -1,10 +1,14 @@
 package com.sky.controller.admin;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
@@ -13,12 +17,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -87,6 +89,20 @@ public class EmployeeController {
     public Result addEmployee(@RequestBody EmployeeDTO employeeDTO){
         employeeService.addEmployee(employeeDTO);
         return Result.success();
+    }
+
+    /**
+     * search employee by page
+     * @param employeePageQueryDTO
+     * @return
+     */
+    @GetMapping("/page")
+    @ApiOperation(value = "employee page search")
+    public Result<PageResult> listEmployee(EmployeePageQueryDTO employeePageQueryDTO){
+        log.info("employee page search,{}",employeePageQueryDTO);
+        PageResult pageResult = employeeService.listEmployee(employeePageQueryDTO);
+        return Result.success(pageResult);
+
     }
 
 }
