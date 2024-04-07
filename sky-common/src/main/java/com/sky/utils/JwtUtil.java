@@ -10,47 +10,48 @@ import java.util.Map;
 
 public class JwtUtil {
     /**
-     * 生成jwt
-     * 使用Hs256算法, 私匙使用固定秘钥
+     * generate jwt
+     * use Hs256 algorithm, use constant key
      *
-     * @param secretKey jwt秘钥
-     * @param ttlMillis jwt过期时间(毫秒)
-     * @param claims    设置的信息
+     * @param secretKey jwt key
+     * @param ttlMillis jwt expire time(ms)
+     * @param claims    set info
      * @return
      */
     public static String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
-        // 指定签名的时候使用的签名算法，也就是header那部分
+        // algorithm, part of header
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-        // 生成JWT的时间
+        // time generate JWT
         long expMillis = System.currentTimeMillis() + ttlMillis;
         Date exp = new Date(expMillis);
 
-        // 设置jwt的body
+        // set jwt body
         JwtBuilder builder = Jwts.builder()
-                // 如果有私有声明，一定要先设置这个自己创建的私有的声明，这个是给builder的claim赋值，一旦写在标准的声明赋值之后，就是覆盖了那些标准的声明的
+                // if there is private claim, must set this private claim for builder to get value.
+                // once write after standard claim, will cover standard claim.
                 .setClaims(claims)
-                // 设置签名使用的签名算法和签名使用的秘钥
+                // set algorithm and key
                 .signWith(signatureAlgorithm, secretKey.getBytes(StandardCharsets.UTF_8))
-                // 设置过期时间
+                // set expire time
                 .setExpiration(exp);
 
         return builder.compact();
     }
 
     /**
-     * Token解密
+     * Token parse
      *
-     * @param secretKey jwt秘钥 此秘钥一定要保留好在服务端, 不能暴露出去, 否则sign就可以被伪造, 如果对接多个客户端建议改造成多个
-     * @param token     加密后的token
+     * @param secretKey jwt key must be saved in server, can't be exposed, or the sign can be faked, if facing multiple clients, set several keys
+     * @param token     encrypted token
      * @return
      */
     public static Claims parseJWT(String secretKey, String token) {
-        // 得到DefaultJwtParser
+        // get DefaultJwtParser
         Claims claims = Jwts.parser()
-                // 设置签名的秘钥
+                // set key for the sign
                 .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
-                // 设置需要解析的jwt
+                // set jwt to be parsed
                 .parseClaimsJws(token).getBody();
         return claims;
     }

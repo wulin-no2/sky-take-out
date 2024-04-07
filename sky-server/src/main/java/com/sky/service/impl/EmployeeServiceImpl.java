@@ -23,6 +23,7 @@ import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -57,7 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
 
-        if (employee.getStatus() == StatusConstant.DISABLE) {
+        if (Objects.equals(employee.getStatus(), StatusConstant.DISABLE)) {
             //password locked
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
         }
@@ -73,17 +74,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
-        // TODO: username duplicate exception handle
+        employee.setStatus(StatusConstant.ENABLE);
         //set password
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         //set other properties
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
-        // TODO: set create user and update user information
-//        Long currentId = BaseContext.getCurrentId();
-//        currentId.getClass().getMethod()
-        employee.setCreateUser(1L);
-        employee.setUpdateUser(1L);
+        // set create and update user id;
+        employee.setCreateUser(BaseContext.getCurrentId());
+        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.addEmployee(employee);
     }
     /**

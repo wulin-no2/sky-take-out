@@ -1,6 +1,7 @@
 package com.sky.interceptor;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
 import com.sky.properties.JwtProperties;
 import com.sky.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -46,7 +47,9 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             log.info("jwt validate:{}", token);
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
-            log.info("employee id：", empId);
+            // set localThread variable;
+            BaseContext.setCurrentId(empId);
+            log.info("employee id：{}", empId);
             //3. valid, let go
             return true;
         } catch (Exception ex) {
