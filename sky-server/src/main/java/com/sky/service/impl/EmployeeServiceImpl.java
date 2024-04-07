@@ -99,6 +99,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(total, result);
     }
 
+    /**
+     * set Employee Status
+     * @param status
+     * @param id
+     */
     @Override
     public void setEmployeeStatus(Integer status, Long id) {
         // we can use common update method here:
@@ -106,6 +111,35 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .status(status)
                 .id(id)
                 .build();
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * get Employee By Id
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee getEmployeeById(Long id) {
+        Employee employee = employeeMapper.getEmployeeById(id);
+        // shouldn't expose password explicitly
+        employee.setPassword("******");
+        return employee;
+
+    }
+
+    /**
+     * edit Employee
+     * @param employeeDTO
+     */
+    @Override
+    public void editEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+        //set update user and time
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        // operate database
         employeeMapper.update(employee);
     }
 }

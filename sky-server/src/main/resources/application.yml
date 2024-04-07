@@ -34,6 +34,6 @@ sky:
     # set jwt token info
     admin-secret-key: itcast
     # set jwt expired time
-    admin-ttl: 7200000
+    admin-ttl: 72000000
     # set token name
     admin-token-name: token
