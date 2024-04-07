@@ -1,7 +1,7 @@
 package com.sky.exception;
 
 /**
- * 套餐启用失败异常
+ * set meal enable failed exception
  */
 public class SetmealEnableFailedException extends BaseException {
 
