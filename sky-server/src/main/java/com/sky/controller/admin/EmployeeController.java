@@ -70,7 +70,6 @@ public class EmployeeController {
 
     /**
      * logout
-     *
      * @return
      */
     @PostMapping("/logout")
@@ -102,7 +101,19 @@ public class EmployeeController {
         log.info("employee page search,{}",employeePageQueryDTO);
         PageResult pageResult = employeeService.listEmployee(employeePageQueryDTO);
         return Result.success(pageResult);
-
     }
 
+    /**
+     * set employee enable or disable
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "set employee enable or disable")
+    public Result setEmployeeStatus(@PathVariable Integer status, Long id){
+        log.info("set employee enable or disable, {},{}",status,id);
+        employeeService.setEmployeeStatus(status, id);
+        return Result.success();
+    }
 }

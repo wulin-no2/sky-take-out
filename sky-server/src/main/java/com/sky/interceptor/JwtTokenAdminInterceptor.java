@@ -50,6 +50,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             // set localThread variable;
             BaseContext.setCurrentId(empId);
             log.info("employee id：{}", empId);
+            //TODO: if status is 0, return false;
+
             //3. valid, let go
             return true;
         } catch (Exception ex) {

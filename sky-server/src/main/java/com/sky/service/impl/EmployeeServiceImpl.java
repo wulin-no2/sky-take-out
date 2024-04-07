@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //1. search data in databases according to username
         Employee employee = employeeMapper.getByUsername(username);
 
-        //2. handle errors）
+        //2. handle errors
         if (employee == null) {
             //account not exist
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
@@ -97,5 +97,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = employeePage.getTotal();
         List<Employee> result = employeePage.getResult();
         return new PageResult(total, result);
+    }
+
+    @Override
+    public void setEmployeeStatus(Integer status, Long id) {
+        // we can use common update method here:
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
     }
 }
