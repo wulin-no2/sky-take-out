@@ -19,6 +19,7 @@
         <set>
             <if test='name!=null and name!=" "'>name = #{name},</if>
             <if test='sort!=null and sort!=" "'>sort = #{sort},</if>
+            <if test='status!=null'>status = #{status},</if>
         </set>
         where id = #{id}
 

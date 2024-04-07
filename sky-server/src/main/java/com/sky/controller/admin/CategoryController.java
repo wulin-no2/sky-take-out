@@ -40,8 +40,35 @@ public class CategoryController {
     @PutMapping
     @ApiOperation(value = "update category")
     public Result updateCategory(@RequestBody CategoryDTO categoryDTO){
-        log.info("update category");
+        log.info("update category {}",categoryDTO);
         categoryService.updateCategory(categoryDTO);
+        return Result.success();
+    }
+
+    /**
+     * set Category Status
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "set Category Status")
+    public Result setCategoryStatus(@PathVariable Integer status, Long id){
+        log.info("set Category Status {},{}",status,id);
+        categoryService.setCategoryStatus(status,id);
+        return Result.success();
+    }
+
+    /**
+     * delete Category
+     * @param id
+     * @return
+     */
+    @DeleteMapping
+    @ApiOperation(value = "delete Category")
+    public Result deleteCategory(Long id){
+        log.info("delete Category {}",id);
+        categoryService.deleteCategory(id);
         return Result.success();
     }
 }
