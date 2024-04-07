@@ -37,4 +37,11 @@ public class CategoryController {
         PageResult pageResult = categoryService.listCategoryByPage(categoryPageQueryDTO);
         return Result.success(pageResult);
     }
+    @PutMapping
+    @ApiOperation(value = "update category")
+    public Result updateCategory(@RequestBody CategoryDTO categoryDTO){
+        log.info("update category");
+        categoryService.updateCategory(categoryDTO);
+        return Result.success();
+    }
 }
