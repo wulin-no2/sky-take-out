@@ -11,6 +11,7 @@ import com.sky.entity.Employee;
 import com.sky.mapper.CategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,16 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(Long id) {
         //TODO: if dish or set has this category, can't delete
         categoryMapper.deleteCategory(id);
+    }
+
+    /**
+     * get Category By Type
+     * @param type
+     * @return
+     */
+    @Override
+    public List<Category> getCategoryByType(Integer type) {
+        return categoryMapper.getCategoryByType(type);
     }
 
 }

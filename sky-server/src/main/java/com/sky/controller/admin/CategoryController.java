@@ -2,6 +2,7 @@ package com.sky.controller.admin;
 
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/category")
@@ -70,5 +73,18 @@ public class CategoryController {
         log.info("delete Category {}",id);
         categoryService.deleteCategory(id);
         return Result.success();
+    }
+
+    /**
+     * get Category By Type
+     * @param type
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "get catogories by type")
+    public Result<List<Category>> getCategoryByType(Integer type){
+        log.info("get catogories by type{}",type);
+        List<Category> list = categoryService.getCategoryByType(type);
+        return Result.success(list);
     }
 }
