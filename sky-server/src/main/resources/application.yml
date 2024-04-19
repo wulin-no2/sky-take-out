@@ -37,3 +37,13 @@ sky:
     admin-ttl: 72000000
     # set token name
     admin-token-name: token
+
+cloud:
+  aws:
+#    credentials:
+#      accessKey: ${AWS_ACCESS_KEY_ID}
+#      secretKey: ${AWS_SECRET_ACCESS_KEY}
+#    must set environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+    region: us-east-1
+    bucketName: airsky
+
