@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     public Result exceptionHandler(SQLIntegrityConstraintViolationException e){
         String message = e.getMessage();
         if (message.contains("Duplicate entry")){
-            log.error("username duplicated.");
+            log.error("entry duplicated.");
             String[] split = message.split(" ");
             String username = split[2];
             String msg = username + MessageConstant.ALREADY_EXIST;
