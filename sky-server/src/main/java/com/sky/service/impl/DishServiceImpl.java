@@ -1,10 +1,14 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.dto.DishDTO;
+import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
+import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -40,5 +44,16 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.addDishFlavors(flavors);
             log.info("dish flavor is:{}",flavors);
         }
+    }
+
+    @Override
+    public PageResult getDishByPage(DishPageQueryDTO dishPageQueryDTO) {
+        // use pageHelper to page DTO;
+        PageHelper.startPage(dishPageQueryDTO.getPage(),dishPageQueryDTO.getPageSize());
+        // get Page result with Dish objects;
+        Page<Dish> dishPage = dishMapper.getDishByPage(dishPageQueryDTO);
+        long total = dishPage.getTotal();
+        List<Dish> result = dishPage.getResult();
+        return new PageResult(total,result);
     }
 }

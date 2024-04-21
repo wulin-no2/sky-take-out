@@ -1,6 +1,8 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
+import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.enumeration.OperationType;
@@ -13,4 +15,5 @@ public interface DishMapper {
     void addDish(Dish dish);
 
 
+    Page<Dish> getDishByPage(DishPageQueryDTO dishPageQueryDTO);
 }
