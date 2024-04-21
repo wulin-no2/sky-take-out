@@ -56,4 +56,10 @@ public class DishServiceImpl implements DishService {
         List<Dish> result = dishPage.getResult();
         return new PageResult(total,result);
     }
+
+    @Override
+    public List<Dish> getDishByCategoryId(Long categoryId) {
+        List<Dish> list = dishMapper.getDishByCategoryId(categoryId);
+        return list;
+    }
 }

@@ -8,6 +8,9 @@ import com.sky.entity.DishFlavor;
 import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface DishMapper {
@@ -16,4 +19,6 @@ public interface DishMapper {
 
 
     Page<Dish> getDishByPage(DishPageQueryDTO dishPageQueryDTO);
+    @Select("select * from dish where category_id = #{categoryId}")
+    List<Dish> getDishByCategoryId(Long categoryId);
 }
