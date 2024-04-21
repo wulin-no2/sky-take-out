@@ -56,5 +56,11 @@ public class DishController {
         DishVO dishVO = dishService.getDishById(id);
         return Result.success(dishVO);
     }
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "modify dish status")
+    public Result updateStatus(@PathVariable Integer status, Long id){
+        dishService.updateStatus(status, id);
+        return Result.success();
+    }
 
 }
