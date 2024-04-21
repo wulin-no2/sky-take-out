@@ -4,12 +4,15 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class DishServiceImpl implements DishService {
     private DishMapper dishMapper;
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
+    @Autowired
+    private CategoryMapper categoryMapper;
     /**
      * add dish
      * @param dishDTO
@@ -61,5 +66,21 @@ public class DishServiceImpl implements DishService {
     public List<Dish> getDishByCategoryId(Long categoryId) {
         List<Dish> list = dishMapper.getDishByCategoryId(categoryId);
         return list;
+    }
+
+    @Override
+    @Transactional
+    public DishVO getDishById(Long id) {
+        Dish dish = dishMapper.getDishById(id);
+        Category category = categoryMapper.getCategoryByCategoryId(dish.getCategoryId());
+        List<DishFlavor> flavors = dishFlavorMapper.getFlavorsByDishId(id);
+
+        // get categoryName, flavors(id, dishId, name, value);
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish,dishVO);
+        dishVO.setFlavors(flavors);
+        dishVO.setCategoryName(category.getName());
+
+        return dishVO;
     }
 }

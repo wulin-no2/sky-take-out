@@ -49,5 +49,12 @@ public class DishController {
         List<Dish> list = dishService.getDishByCategoryId(categoryId);
         return Result.success(list);
     }
+    @GetMapping("/{id}")
+    @ApiOperation(value = "get dish by id")
+    public Result<DishVO> getDishById(@PathVariable Long id){
+        log.info("get dish by id {}",id);
+        DishVO dishVO = dishService.getDishById(id);
+        return Result.success(dishVO);
+    }
 
 }

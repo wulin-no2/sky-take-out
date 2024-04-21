@@ -22,8 +22,10 @@ public interface CategoryMapper {
     Page<Category> listCategoryByPage(CategoryPageQueryDTO categoryPageQueryDTO);
     @AutoFill(value = OperationType.UPDATE)
     void updateCategory(Category category);
-    @Delete("delete from category where id=#{id}")
+    @Delete("delete from category where id = #{id}")
     void deleteCategory(Long id);
     @Select("select * from category where type = #{type}")
     List<Category> getCategoryByType(Integer type);
+@Select("select * from category where id = #{categoryId}")
+    Category getCategoryByCategoryId(Long categoryId);
 }

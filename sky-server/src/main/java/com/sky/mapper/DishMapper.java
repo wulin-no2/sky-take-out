@@ -21,4 +21,6 @@ public interface DishMapper {
     Page<Dish> getDishByPage(DishPageQueryDTO dishPageQueryDTO);
     @Select("select * from dish where category_id = #{categoryId}")
     List<Dish> getDishByCategoryId(Long categoryId);
+@Select("select * from dish where id = #{id}")
+    Dish getDishById(Long id);
 }
