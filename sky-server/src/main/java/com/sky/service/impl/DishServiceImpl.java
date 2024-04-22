@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -93,5 +94,31 @@ public class DishServiceImpl implements DishService {
                 .id(id)
                 .build();
         dishMapper.update(dish);
+    }
+
+    @Override
+    @Transactional
+    public void updateDish(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO,dish);
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        for (DishFlavor df: flavors){
+            df.setDishId(dish.getId());
+        }
+        // delete all the flavors, then add all the flavors;
+        dishFlavorMapper.deleteBatchByDishId(dish.getId());
+        dishFlavorMapper.addDishFlavors(flavors);
+        // update dish info:
+        dishMapper.update(dish);
+    }
+
+    @Override
+    @Transactional
+    public void deleteBatch(ArrayList<Long> ids) {
+        dishMapper.deleteBatch(ids);
+        log.info("dish ids are {}",ids);
+        for(Long dishId: ids){
+            dishFlavorMapper.deleteBatchByDishId(dishId);
+        }
     }
 }

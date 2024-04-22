@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.event.WindowFocusListener;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -59,8 +61,21 @@ public class DishController {
     @PostMapping("/status/{status}")
     @ApiOperation(value = "modify dish status")
     public Result updateStatus(@PathVariable Integer status, Long id){
+        log.info("modify dish status{} for {}",status,id);
         dishService.updateStatus(status, id);
         return Result.success();
     }
-
+    @DeleteMapping
+    @ApiOperation(value = "delete dishes by ids")
+    public Result deleteDishes(@RequestParam ArrayList<Long> ids){
+        log.info("delete dishes{}",ids);
+        dishService.deleteBatch(ids);
+        return Result.success();
+    }
+    @PutMapping
+    @ApiOperation(value = "update dish")
+    public Result updateDish(@RequestBody DishDTO dishDTO){
+        dishService.updateDish(dishDTO);
+        return Result.success();
+    }
 }

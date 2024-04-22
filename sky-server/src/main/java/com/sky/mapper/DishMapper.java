@@ -25,4 +25,6 @@ public interface DishMapper {
     Dish getDishById(Long id);
     @AutoFill(value = OperationType.UPDATE)
     void update(Dish dish);
+
+    void deleteBatch(List<Long> ids);
 }
