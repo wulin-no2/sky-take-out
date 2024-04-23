@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,6 +53,11 @@ public class SetMealServiceImpl implements SetMealService {
             }
         }
 
+    /**
+     * page SetMeal with pageHelper
+     * @param setmealPageQueryDTO
+     * @return
+     */
     @Override
     public PageResult pageSetMeal(SetmealPageQueryDTO setmealPageQueryDTO) {
         PageHelper.startPage(setmealPageQueryDTO.getPage(),setmealPageQueryDTO.getPageSize());
@@ -62,6 +68,11 @@ public class SetMealServiceImpl implements SetMealService {
         return new PageResult(total,result);
     }
 
+    /**
+     * update set meal Status
+     * @param status
+     * @param id
+     */
     @Override
     public void updateStatus(Integer status, Long id) {
         Setmeal setmeal = Setmeal.builder()
@@ -72,6 +83,11 @@ public class SetMealServiceImpl implements SetMealService {
 
     }
 
+    /**
+     * get Setmeal By Id
+     * @param id
+     * @return
+     */
     @Override
     public SetmealVO getSetmealById(Long id) {
         // get set meal
@@ -86,9 +102,14 @@ public class SetMealServiceImpl implements SetMealService {
                 .setmealDishes(list)
                 .build();
         BeanUtils.copyProperties(setmeal,setmealVO);
-
         return setmealVO;
     }
 
-
+    @Override
+    @Transactional
+    public void deleteInBatch(ArrayList<Long> ids) {
+        setMealMapper.deleteInBatch(ids);
+        log.info("dish ids are {}",ids);
+        ids.forEach(id->setMealDishMapper.deleteBySetmealId(id));
+    }
 }

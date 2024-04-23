@@ -8,6 +8,8 @@ import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.ArrayList;
+
 @Mapper
 public interface SetMealMapper {
     @AutoFill(value = OperationType.INSERT)
@@ -18,4 +20,6 @@ public interface SetMealMapper {
     void update(Setmeal setmeal);
     @Select("select * from setmeal where id=#{id}")
     Setmeal getSetmealById(Long id);
+
+    void deleteInBatch(ArrayList<Long> ids);
 }

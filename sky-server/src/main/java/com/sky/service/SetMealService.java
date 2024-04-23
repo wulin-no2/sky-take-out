@@ -6,6 +6,8 @@ import com.sky.result.PageResult;
 import com.sky.vo.SetmealVO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 
 public interface SetMealService {
     void addSetMeal(SetmealDTO setmealDTO);
@@ -15,4 +17,6 @@ public interface SetMealService {
     void updateStatus(Integer status, Long id);
 
     SetmealVO getSetmealById(Long id);
+
+    void deleteInBatch(ArrayList<Long> ids);
 }

@@ -12,4 +12,6 @@ public interface SetMealDishMapper {
     void addSetMealDishes(List<SetmealDish> setmealDishes);
     @Select("select * from setmeal_dish where setmeal_id = #{id}")
     List<SetmealDish> getSetmealDishesBySetmealId(Long id);
+
+    void deleteBySetmealId(Long id);
 }
