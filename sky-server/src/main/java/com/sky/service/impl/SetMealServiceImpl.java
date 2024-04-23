@@ -1,10 +1,14 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.dto.SetmealDTO;
+import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.mapper.SetMealDishMapper;
 import com.sky.mapper.SetMealMapper;
+import com.sky.result.PageResult;
 import com.sky.service.SetMealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +47,15 @@ public class SetMealServiceImpl implements SetMealService {
             }
         }
 
+    @Override
+    public PageResult pageSetMeal(SetmealPageQueryDTO setmealPageQueryDTO) {
+        PageHelper.startPage(setmealPageQueryDTO.getPage(),setmealPageQueryDTO.getPageSize());
+        // get page result;
+        Page<Setmeal> pageResult = setMealMapper.pageSetMeal(setmealPageQueryDTO);
+        long total = pageResult.getTotal();
+        List<Setmeal> result = pageResult.getResult();
+        return new PageResult(total,result);
+    }
 
 
 }
