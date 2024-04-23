@@ -8,3 +8,6 @@ sky:
     password: ${DATABASE_PASSWORD}
   redis:
     password: ${REDIS_PASSWORD}
+  wechat:
+    appid: ${WECHAT_APPID}
+    secret: ${WECHAT_SECRET}

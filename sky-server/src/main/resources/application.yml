@@ -42,6 +42,14 @@ sky:
     admin-ttl: 72000000
     # set token name
     admin-token-name: token
+    # key for user
+    user-secret-key: linawu
+    user-ttl: 72000000
+    # already specify it with front end
+    user-token-name: authentication
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
 
 cloud:
   aws:
