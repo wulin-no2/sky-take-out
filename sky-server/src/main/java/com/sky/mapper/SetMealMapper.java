@@ -6,6 +6,7 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface SetMealMapper {
@@ -15,4 +16,6 @@ public interface SetMealMapper {
     Page<Setmeal> pageSetMeal(SetmealPageQueryDTO setmealPageQueryDTO);
     @AutoFill(OperationType.UPDATE)
     void update(Setmeal setmeal);
+    @Select("select * from setmeal where id=#{id}")
+    Setmeal getSetmealById(Long id);
 }

@@ -4,12 +4,15 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.SetMealDishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetMealService;
+import com.sky.vo.SetmealVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class SetMealServiceImpl implements SetMealService {
     private SetMealMapper setMealMapper;
     @Autowired
     private SetMealDishMapper setMealDishMapper;
+    @Autowired
+    private CategoryMapper categoryMapper;
     /**
      * add Set Meal
      * @param setmealDTO
@@ -65,6 +70,24 @@ public class SetMealServiceImpl implements SetMealService {
                 .build();
         setMealMapper.update(setmeal);
 
+    }
+
+    @Override
+    public SetmealVO getSetmealById(Long id) {
+        // get set meal
+        Setmeal setmeal = setMealMapper.getSetmealById(id);
+        // get set meal dishes
+        List<SetmealDish> list = setMealDishMapper.getSetmealDishesBySetmealId(id);
+        // get category name
+        Category category = categoryMapper.getCategoryByCategoryId(setmeal.getCategoryId());
+        // set setmealVO
+        SetmealVO setmealVO = SetmealVO.builder()
+                .categoryName(category.getName())
+                .setmealDishes(list)
+                .build();
+        BeanUtils.copyProperties(setmeal,setmealVO);
+
+        return setmealVO;
     }
 
 
