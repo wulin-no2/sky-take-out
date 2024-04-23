@@ -1,13 +1,30 @@
 package com.sky.controller.admin;
 
+import com.sky.dto.SetmealDTO;
+import com.sky.result.Result;
+import com.sky.service.SetMealService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Api(tags = "set meal interfaces")
-@RequestMapping("/admin/Setmeal")
+@RequestMapping("/admin/setmeal")
 @Slf4j
 public class SetMealController {
+    @Autowired
+    private SetMealService setMealService;
+    @PostMapping
+    @ApiOperation(value = "add set meal")
+    public Result addSetMeal(@RequestBody SetmealDTO setmealDTO){
+        log.info("add set meal{}",setmealDTO.getName());
+        setMealService.addSetMeal(setmealDTO);
+        return Result.success();
+    }
+
 }
