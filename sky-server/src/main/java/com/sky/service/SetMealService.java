@@ -19,4 +19,6 @@ public interface SetMealService {
     SetmealVO getSetmealById(Long id);
 
     void deleteInBatch(ArrayList<Long> ids);
+
+    void update(SetmealDTO setmealDTO);
 }

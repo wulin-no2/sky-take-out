@@ -88,4 +88,17 @@ public class SetMealController {
         setMealService.deleteInBatch(ids);
         return Result.success();
     }
+
+    /**
+     * update set meal
+     * @param setmealDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation(value = "update set meal")
+    public Result update(@RequestBody SetmealDTO setmealDTO){
+        log.info("update set meal{}",setmealDTO.getName());
+        setMealService.update(setmealDTO);
+        return Result.success();
+    }
 }
