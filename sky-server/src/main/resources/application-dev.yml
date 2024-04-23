@@ -6,3 +6,5 @@ sky:
     database: sky_take_out
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+  redis:
+    password: ${REDIS_PASSWORD}
