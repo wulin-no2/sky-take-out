@@ -57,5 +57,15 @@ public class SetMealServiceImpl implements SetMealService {
         return new PageResult(total,result);
     }
 
+    @Override
+    public void updateStatus(Integer status, Long id) {
+        Setmeal setmeal = Setmeal.builder()
+                .status(status)
+                .id(id)
+                .build();
+        setMealMapper.update(setmeal);
+
+    }
+
 
 }

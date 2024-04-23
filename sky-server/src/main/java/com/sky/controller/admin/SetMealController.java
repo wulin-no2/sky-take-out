@@ -32,4 +32,11 @@ public class SetMealController {
         PageResult pageResult = setMealService.pageSetMeal(setmealPageQueryDTO);
         return Result.success(pageResult);
     }
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "modify status of setMeal")
+    public Result updateStatus(@PathVariable Integer status, Long id){
+        log.info("modify status of setMeal{}",status==1?"on sale":"stop sale");
+        setMealService.updateStatus(status,id);
+        return Result.success();
+    }
 }

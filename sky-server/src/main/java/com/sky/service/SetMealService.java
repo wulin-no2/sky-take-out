@@ -10,4 +10,6 @@ public interface SetMealService {
     void addSetMeal(SetmealDTO setmealDTO);
 
     PageResult pageSetMeal(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    void updateStatus(Integer status, Long id);
 }
