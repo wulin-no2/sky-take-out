@@ -1,6 +1,7 @@
 package com.sky.config;
 
 import com.sky.interceptor.JwtTokenAdminInterceptor;
+import com.sky.interceptor.JwtTokenUserInterceptor;
 import com.sky.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+    @Autowired
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
     /**
      * register customized filter
@@ -40,14 +43,18 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login")
+                .excludePathPatterns("/user/shop/status");
     }
 
     /**
-     * generate interface document with knife4j
+     * generate admin interfaces document with knife4j
      * @return
      */
     @Bean
-    public Docket docket() {
+    public Docket docketAdmin() {
         log.info("ready to generate interface document..");
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("sky_project_interface_doc")
@@ -55,14 +62,39 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .description("sky_project_interface_doc")
                 .build();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .groupName("admin interfaces")
                 .apiInfo(apiInfo)
                 .select()
                 // the directory we need to scan
-                .apis(RequestHandlerSelectors.basePackage("com.sky.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller.admin"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;
     }
+
+    /**
+     * generate user interfaces document with knife4j
+     * @return
+     */
+    @Bean
+    public Docket docketUser() {
+        log.info("ready to generate interface document..");
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("sky_project_interface_doc")
+                .version("2.0")
+                .description("sky_project_interface_doc")
+                .build();
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .groupName("user interfaces")
+                .apiInfo(apiInfo)
+                .select()
+                // the directory we need to scan
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller.user"))
+                .paths(PathSelectors.any())
+                .build();
+        return docket;
+    }
+
 
     /**
      * configure static resources reflection

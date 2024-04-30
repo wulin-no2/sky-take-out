@@ -16,7 +16,7 @@ public class JwtUtil {
      * @param secretKey jwt key
      * @param ttlMillis jwt expire time(ms)
      * @param claims    set info
-     * @return
+     * @return token
      */
     public static String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
         // algorithm, part of header
