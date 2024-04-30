@@ -121,4 +121,28 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.deleteBatchByDishId(dishId);
         }
     }
+
+    /**
+     * get dishVOs with flavors by dish
+     * @param dish
+     * @return
+     */
+    public List<DishVO> listWithFlavor(Dish dish) {
+        List<Dish> dishList = dishMapper.getDishByCategoryId(dish.getCategoryId());
+
+        List<DishVO> dishVOList = new ArrayList<>();
+
+        for (Dish d : dishList) {
+            if (d.getStatus() == 1){
+                DishVO dishVO = new DishVO();
+                BeanUtils.copyProperties(d,dishVO);
+                //get flavors by dish id
+                List<DishFlavor> flavors = dishFlavorMapper.getFlavorsByDishId(d.getId());
+
+                dishVO.setFlavors(flavors);
+                dishVOList.add(dishVO);
+            }
+        }
+        return dishVOList;
+    }
 }

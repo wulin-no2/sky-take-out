@@ -12,6 +12,7 @@ import com.sky.mapper.SetMealDishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetMealService;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -105,6 +106,10 @@ public class SetMealServiceImpl implements SetMealService {
         return setmealVO;
     }
 
+    /**
+     * delete setmeal In Batch
+     * @param ids
+     */
     @Override
     @Transactional
     public void deleteInBatch(ArrayList<Long> ids) {
@@ -113,6 +118,10 @@ public class SetMealServiceImpl implements SetMealService {
         ids.forEach(id->setMealDishMapper.deleteBySetmealId(id));
     }
 
+    /**
+     * update setmeal
+     * @param setmealDTO
+     */
     @Override
     @Transactional
     public void update(SetmealDTO setmealDTO) {
@@ -129,5 +138,20 @@ public class SetMealServiceImpl implements SetMealService {
         BeanUtils.copyProperties(setmealDTO,setmeal);
         //update
         setMealMapper.update(setmeal);
+    }
+
+    /**
+     * list setmeal by category id and status
+     * @param setmeal
+     * @return
+     */
+    @Override
+    public List<Setmeal> list(Setmeal setmeal) {
+        return setMealMapper.list(setmeal);
+    }
+
+    @Override
+    public List<DishItemVO> getDishItemById(Long id) {
+        return setMealMapper.getDishItemBySetmealId(id);
     }
 }

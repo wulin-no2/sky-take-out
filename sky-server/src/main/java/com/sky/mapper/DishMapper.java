@@ -17,7 +17,6 @@ public interface DishMapper {
     @AutoFill(value = OperationType.INSERT)
     void addDish(Dish dish);
 
-
     Page<Dish> getDishByPage(DishPageQueryDTO dishPageQueryDTO);
     @Select("select * from dish where category_id = #{categoryId}")
     List<Dish> getDishByCategoryId(Long categoryId);

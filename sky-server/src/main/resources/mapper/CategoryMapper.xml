@@ -14,6 +14,14 @@
         </where>
         order by create_time desc
     </select>
+    <select id="getCategoryByType" resultType="com.sky.entity.Category">
+        select * from category
+        <where>
+            <if test='id != null'>
+                id = #{categoryId}
+            </if>
+        </where>
+    </select>
     <update id="updateCategory" parameterType="category">
         update category
         <set>
