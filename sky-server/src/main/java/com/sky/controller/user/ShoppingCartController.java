@@ -56,4 +56,17 @@ public class ShoppingCartController {
         shoppingCartService.clean();
         return Result.success();
     }
+
+    /**
+     * sub one dish in the shopping cart
+     * @param shoppingCartDTO
+     * @return
+     */
+    @PostMapping("/sub")
+    @ApiOperation("sub one dish in the shopping car")
+    public Result subDish(@RequestBody ShoppingCartDTO shoppingCartDTO){
+        log.info("sub one dish in the shopping cart{}",shoppingCartDTO);
+        shoppingCartService.sub(shoppingCartDTO);
+        return Result.success();
+    }
 }

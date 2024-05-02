@@ -81,4 +81,31 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Long currentId = BaseContext.getCurrentId();
         shoppingCartMapper.deleteBatchById(currentId);
     }
+
+    @Override
+    public void sub(ShoppingCartDTO shoppingCartDTO) {
+        //check if the dish to be added exists
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO,shoppingCart);
+        // get userId from ThreadLocal;
+        Long currentId = BaseContext.getCurrentId();
+        shoppingCart.setUserId(currentId);
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+
+        if (list != null && !list.isEmpty()){
+            // if the number > 1, number - 1;
+            ShoppingCart item = list.get(0);
+            Integer num = item.getNumber();
+            if (num > 1){
+                item.setNumber(num - 1);
+                shoppingCartMapper.updateNumber(item);
+            }
+            // if the number is 1, delete it;
+            else{
+                shoppingCartMapper.deleteById(item.getId());
+            }
+        }
+
+
+    }
 }
