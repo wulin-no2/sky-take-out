@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,7 @@ public class DishController {
      */
     @PostMapping
     @ApiOperation(value = "add new dish")
+    @CacheEvict(cacheNames = "SetmealCache", key = "#dishDTO.categoryId")
     public Result addDish(@RequestBody DishDTO dishDTO){
         log.info("add new dish {}",dishDTO);
         dishService.addDish(dishDTO);
@@ -67,6 +69,7 @@ public class DishController {
     }
     @PostMapping("/status/{status}")
     @ApiOperation(value = "modify dish status")
+    @CacheEvict(cacheNames = "SetmealCache", allEntries = true)
     public Result updateStatus(@PathVariable Integer status, Long id){
         log.info("modify dish status{} for {}",status,id);
         dishService.updateStatus(status, id);
@@ -76,6 +79,7 @@ public class DishController {
     }
     @DeleteMapping
     @ApiOperation(value = "delete dishes by ids")
+    @CacheEvict(cacheNames = "SetmealCache", allEntries = true)
     public Result deleteDishes(@RequestParam ArrayList<Long> ids){
         log.info("delete dishes{}",ids);
         dishService.deleteBatch(ids);
@@ -85,6 +89,7 @@ public class DishController {
     }
     @PutMapping
     @ApiOperation(value = "update dish")
+    @CacheEvict(cacheNames = "SetmealCache", allEntries = true)
     public Result updateDish(@RequestBody DishDTO dishDTO){
         dishService.updateDish(dishDTO);
         // delete all the dish cache data
