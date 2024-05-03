@@ -3,6 +3,7 @@ package com.sky.service.impl;
 
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.AddressBook;
 import com.sky.entity.OrderDetail;
@@ -110,5 +111,27 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         return orderSubmitVO;
+    }
+
+    /**
+     * user pay the order
+     * @param ordersPaymentDTO
+     * @return EstimatedDeliveryTime
+     */
+    @Transactional
+    public LocalDateTime payment(OrdersPaymentDTO ordersPaymentDTO) {
+        // update orders:
+        Orders order = Orders
+                .builder()
+                .status(Orders.TO_BE_CONFIRMED)
+                .checkoutTime(LocalDateTime.now())
+                .payMethod(ordersPaymentDTO.getPayMethod())
+                .payStatus(Orders.PAID)
+                .number(ordersPaymentDTO.getOrderNumber())
+                .build();
+        orderMapper.update(order);
+        // get order estimatedDeliveryTime;
+        Orders orders = orderMapper.getOrderByNumber(ordersPaymentDTO.getOrderNumber());
+        return orders.getEstimatedDeliveryTime();
     }
 }

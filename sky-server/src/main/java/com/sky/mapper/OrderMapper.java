@@ -6,4 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface OrderMapper {
     void insert(Orders orders);
+
+    void update(Orders order);
+
+    Orders getOrderByNumber(String number);
 }

@@ -1,6 +1,7 @@
 package com.sky.controller.user;
 
 import com.sky.dto.OrdersDTO;
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
@@ -8,11 +9,11 @@ import com.sky.vo.OrderSubmitVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController("UserOrderController")
 @RequestMapping("/user/order")
@@ -33,5 +34,12 @@ public class OrderController {
         log.info("user submit order{}",ordersSubmitDTO);
         OrderSubmitVO orderSubmitVO = orderService.submit(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
+    }
+    @PutMapping("/payment")
+    @ApiOperation("user pay the order")
+    public Result<String> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
+        LocalDateTime estimatedTime = orderService.payment(ordersPaymentDTO);
+        return Result.success(String.valueOf(estimatedTime));
+
     }
 }

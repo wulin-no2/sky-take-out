@@ -7,6 +7,20 @@
         VALUES(#{number},#{status},#{userId},#{addressBookId},#{orderTime},#{payMethod},#{payStatus},#{amount},#{remark},#{phone},#{address},#{userName},#{consignee},#{estimatedDeliveryTime},#{deliveryStatus},#{packAmount},#{tablewareNumber},#{tablewareStatus})
 
     </insert>
+    <update id="update" parameterType="orders">
+        update orders
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="checkoutTime != null">checkout_time = #{checkoutTime},</if>
+            <if test="payMethod != null">pay_method = #{payMethod},</if>
+            <if test="payStatus != null">pay_status = #{payStatus},</if>
+        </set>
+        where number = #{number}
+    </update>
+    <select id="getOrderByNumber" resultType="com.sky.entity.Orders">
+        select * from orders where number=#{number}
+    </select>
+
     <!--    <update id="update" parameterType="Dish">-->
     <!--        update Dish-->
     <!--        <set>-->
