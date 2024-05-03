@@ -71,8 +71,8 @@ public class OrderServiceImpl implements OrderService {
         Orders orders = new Orders();
         BeanUtils.copyProperties(ordersSubmitDTO,orders);
         // fill other fields
-        orders.setStatus(Orders.UN_PAID);
-        orders.setPayStatus(Orders.PENDING_PAYMENT);
+        orders.setStatus(Orders.PENDING_PAYMENT);
+        orders.setPayStatus(Orders.UN_PAID);
         orders.setUserId(currentId);
         orders.setOrderTime(LocalDateTime.now());
         // TODO: how to set Address??
