@@ -79,7 +79,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void clean() {
         // get user id
         Long currentId = BaseContext.getCurrentId();
-        shoppingCartMapper.deleteBatchById(currentId);
+        shoppingCartMapper.deleteBatchByUserId(currentId);
     }
 
     @Override
