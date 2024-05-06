@@ -162,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      */
     @Override
+    @Transactional
     public void reminder(Long id) {
         // get order by orderId
         Orders order = orderMapper.getById(id);
@@ -201,6 +202,7 @@ public class OrderServiceImpl implements OrderService {
      */
 
     @Override
+    @Transactional
     public OrderStatisticsVO statisticsOrder() {
 
         // get confirmed
@@ -242,6 +244,7 @@ public class OrderServiceImpl implements OrderService {
      * @param ordersConfirmDTO
      */
     @Override
+    @Transactional
     public void confirmOrder(OrdersConfirmDTO ordersConfirmDTO) {
         // get order
         Orders order = orderMapper.getById(ordersConfirmDTO.getId());
@@ -256,6 +259,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      */
     @Override
+    @Transactional
     public void completeOrder(Long id) {
         // get order
         Orders order = orderMapper.getById(id);
@@ -271,6 +275,7 @@ public class OrderServiceImpl implements OrderService {
      * @param ordersRejectionDTO
      */
     @Override
+    @Transactional
     public void rejectOrder(OrdersRejectionDTO ordersRejectionDTO) {
         // get order
         Orders order = orderMapper.getById(ordersRejectionDTO.getId());
@@ -287,6 +292,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      */
     @Override
+    @Transactional
     public void deliveryOrder(Long id) {
         // get order
         Orders order = orderMapper.getById(id);
@@ -358,5 +364,41 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return new PageResult(pageResult.getTotal(), list);
+    }
+
+    /**
+     * user Cancel Order
+     * @param id
+     */
+    @Override
+    @Transactional
+    public void userCancelOrder(Long id) {
+        // get order
+        Orders order = orderMapper.getById(id);
+        // set order
+        order.setStatus(Orders.CANCELLED);
+        order.setCancelTime(LocalDateTime.now());
+        // update order
+        orderMapper.update(order);
+    }
+
+    @Override
+    public void userRepetitionOrder(Long id) {
+        // get order
+        Orders order = orderMapper.getById(id);
+        // set order
+        Orders newOrder = new Orders();
+        BeanUtils.copyProperties(order,newOrder);
+
+        // update info
+        newOrder.setId(null);
+        newOrder.setStatus(Orders.TO_BE_CONFIRMED);
+        newOrder.setOrderTime(LocalDateTime.now());
+        newOrder.setNumber(String.valueOf(System.currentTimeMillis()));
+        newOrder.setPayStatus(Orders.UN_PAID);
+        newOrder.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(1));
+
+        // insert order
+        orderMapper.insert(newOrder);
     }
 }

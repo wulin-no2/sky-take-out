@@ -76,10 +76,30 @@ public class OrderController {
     }
     @GetMapping("/historyOrders")
     @ApiOperation("user get historyOrders")
-
     public Result<PageResult> pageHistoryOrders(int page, int pageSize, Integer status) {
         log.info("user get historyOrders");
         PageResult pageResult = orderService.pageHistoryOrders(page, pageSize, status);
         return Result.success(pageResult);
+    }
+
+    /**
+     * user cancel Order
+     * @param id order id
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    @ApiOperation("user cancel Order")
+    public Result cancelOrder(@PathVariable Long id){
+        log.info("cancel Order id: {}",id);
+        orderService.userCancelOrder(id);
+        return Result.success();
+    }
+    @PostMapping("/repetition/{id}")
+    @ApiOperation("user repetition Order id")
+    public Result repetition(@PathVariable Long id){
+        log.info("user repetition Order id: {}",id);
+        orderService.userRepetitionOrder(id);
+        return Result.success();
+
     }
 }

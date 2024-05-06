@@ -33,4 +33,8 @@ public interface OrderService {
     OrderVO orderDetails(Long id);
 
     PageResult pageHistoryOrders(int page, int pageSize, Integer status);
+
+    void userCancelOrder(Long id);
+
+    void userRepetitionOrder(Long id);
 }
