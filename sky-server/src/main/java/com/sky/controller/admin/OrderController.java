@@ -9,6 +9,7 @@ import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderStatisticsVO;
+import com.sky.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -111,9 +112,9 @@ public class OrderController {
     }
     @GetMapping("/details/{id}")
     @ApiOperation("admin check order details")
-    public Result<OrderDetailsVO> orderDetails(@PathVariable Long id){
+    public Result<OrderVO> orderDetails(@PathVariable Long id){
         log.info("admin check order details: id {}",id);
-        OrderDetailsVO orderDetailsVO = orderService.adminOrderDetails(id);
-        return Result.success(orderDetailsVO);
+        OrderVO orderVO = orderService.orderDetails(id);
+        return Result.success(orderVO);
     }
 }

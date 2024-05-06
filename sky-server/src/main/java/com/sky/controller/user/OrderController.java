@@ -1,11 +1,12 @@
 package com.sky.controller.user;
 
-import com.sky.dto.OrdersDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -62,4 +63,23 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * user get order details
+     * @param id
+     * @return
+     */
+    @GetMapping("/orderDetail/{id}")
+    public Result<OrderVO> orderDetails(@PathVariable Long id){
+        log.info("user get order details{}",id);
+        OrderVO orderVO = orderService.orderDetails(id);
+        return Result.success(orderVO);
+    }
+    @GetMapping("/historyOrders")
+    @ApiOperation("user get historyOrders")
+
+    public Result<PageResult> pageHistoryOrders(int page, int pageSize, Integer status) {
+        log.info("user get historyOrders");
+        PageResult pageResult = orderService.pageHistoryOrders(page, pageSize, status);
+        return Result.success(pageResult);
+    }
 }

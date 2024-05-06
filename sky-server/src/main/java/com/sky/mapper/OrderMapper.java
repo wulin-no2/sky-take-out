@@ -24,4 +24,6 @@ public interface OrderMapper {
     Page<Orders> listOrders(OrdersPageQueryDTO ordersPageQueryDTO);
     @Select("select count(*) from orders where status = #{status}")
     int getCountByStatus(Integer status);
+
+    Page<Orders> pageHistoryOrders(Integer status, Long userId);
 }

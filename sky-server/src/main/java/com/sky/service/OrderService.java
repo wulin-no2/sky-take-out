@@ -5,6 +5,7 @@ import com.sky.result.PageResult;
 import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 
 import java.time.LocalDateTime;
 
@@ -29,5 +30,7 @@ public interface OrderService {
 
     void deliveryOrder(Long id);
 
-    OrderDetailsVO adminOrderDetails(Long id);
+    OrderVO orderDetails(Long id);
+
+    PageResult pageHistoryOrders(int page, int pageSize, Integer status);
 }

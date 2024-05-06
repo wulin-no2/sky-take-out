@@ -22,6 +22,7 @@ import com.sky.service.OrderService;
 import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -190,7 +191,8 @@ public class OrderServiceImpl implements OrderService {
         Page<Orders> orderPage = orderMapper.listOrders(ordersPageQueryDTO);
         long total = orderPage.getTotal();
         List<Orders> result = orderPage.getResult();
-        return new PageResult(total, result);
+        PageResult pageResult = new PageResult(total, result);
+        return pageResult;
     }
 
     /**
@@ -301,7 +303,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public OrderDetailsVO adminOrderDetails(Long id) {
+    public OrderVO orderDetails(Long id) {
         // get order
         Orders order = orderMapper.getById(id);
         //get orderDetail
@@ -312,12 +314,49 @@ public class OrderServiceImpl implements OrderService {
             orderDishes += orderDetail.getName() + ",";
         }
         // construct VO
-        OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
-        BeanUtils.copyProperties(order,orderDetailsVO);
-        orderDetailsVO.setOrderDetailList(orderDetailList);
-        orderDetailsVO.setOrderDishes(orderDishes);
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(order,orderVO);
+        orderVO.setOrderDetailList(orderDetailList);
+        orderVO.setOrderDishes(orderDishes);
 
         //return
-        return orderDetailsVO;
+        return orderVO;
+    }
+
+    /**
+     * user get page History Orders
+     * @param page, pageSize, status
+     * @return
+     */
+    @Override
+    @Transactional
+    public PageResult pageHistoryOrders(int page, int pageSize, Integer status) {
+        PageHelper.startPage(page,pageSize);
+
+        OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
+        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+        ordersPageQueryDTO.setStatus(status);
+
+        // page select
+        Page<Orders> pageResult = orderMapper.listOrders(ordersPageQueryDTO);
+
+        List<OrderVO> list = new ArrayList();
+
+        // use OrderVO to response
+        if (pageResult != null && pageResult.getTotal() > 0) {
+            for (Orders orders : pageResult) {
+                Long orderId = orders.getId();// order id
+
+                // get order details
+                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
+
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders, orderVO);
+                orderVO.setOrderDetailList(orderDetails);
+
+                list.add(orderVO);
+            }
+        }
+        return new PageResult(pageResult.getTotal(), list);
     }
 }
