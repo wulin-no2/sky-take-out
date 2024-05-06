@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -384,21 +385,23 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void userRepetitionOrder(Long id) {
-        // get order
-        Orders order = orderMapper.getById(id);
-        // set order
-        Orders newOrder = new Orders();
-        BeanUtils.copyProperties(order,newOrder);
+        // get user id
+        Long userId = BaseContext.getCurrentId();
 
-        // update info
-        newOrder.setId(null);
-        newOrder.setStatus(Orders.TO_BE_CONFIRMED);
-        newOrder.setOrderTime(LocalDateTime.now());
-        newOrder.setNumber(String.valueOf(System.currentTimeMillis()));
-        newOrder.setPayStatus(Orders.UN_PAID);
-        newOrder.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(1));
+        // get order detail
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
 
-        // insert order
-        orderMapper.insert(newOrder);
+        // convert orderDetailList to ShoppingCart
+        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(a->{
+            ShoppingCart shoppingCart = new ShoppingCart();
+            //copy dishes
+            BeanUtils.copyProperties(a,shoppingCart,"id");
+            shoppingCart.setUserId(userId);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            return shoppingCart;
+        }).collect(Collectors.toList());
+
+        // add shoppingCart list
+        shoppingCartMapper.insertBatch(shoppingCartList);
     }
 }
