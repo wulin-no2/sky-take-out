@@ -1,5 +1,7 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -18,4 +20,6 @@ public interface OrderMapper {
     List<Orders> listByStatusAndOrderTime(Integer status, LocalDateTime time);
 @Select("select * from orders where id = #{id}")
     Orders getById(Long id);
+
+    Page<Orders> listOrders(OrdersPageQueryDTO ordersPageQueryDTO);
 }

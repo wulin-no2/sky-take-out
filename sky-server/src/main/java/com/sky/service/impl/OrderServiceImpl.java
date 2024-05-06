@@ -2,8 +2,11 @@ package com.sky.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.AddressBook;
@@ -16,6 +19,7 @@ import com.sky.mapper.AddressBookMapper;
 import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ShoppingCartMapper;
+import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.websocket.WebSocketServer;
@@ -176,5 +180,19 @@ public class OrderServiceImpl implements OrderService {
 
 
 
+    }
+
+    /**
+     * page orders
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult pageOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(),ordersPageQueryDTO.getPageSize());
+        Page<Orders> orderPage = orderMapper.listOrders(ordersPageQueryDTO);
+        long total = orderPage.getTotal();
+        List<Orders> result = orderPage.getResult();
+        return new PageResult(total, result);
     }
 }
