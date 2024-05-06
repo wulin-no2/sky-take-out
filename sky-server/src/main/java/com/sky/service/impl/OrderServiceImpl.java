@@ -247,4 +247,30 @@ public class OrderServiceImpl implements OrderService {
         // update order
         orderMapper.update(order);
     }
+
+    /**
+     * admin complete Order
+     * @param id
+     */
+    @Override
+    public void completeOrder(Long id) {
+        // get order
+        Orders order = orderMapper.getById(id);
+        // set order
+        order.setStatus(Orders.COMPLETED);
+        // update order
+        orderMapper.update(order);
+    }
+
+    @Override
+    public void rejectOrder(OrdersRejectionDTO ordersRejectionDTO) {
+        // get order
+        Orders order = orderMapper.getById(ordersRejectionDTO.getId());
+        // set order
+        //todo: should the status be completed or canceled?
+        order.setStatus(Orders.CANCELLED);
+        order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+        // update order
+        orderMapper.update(order);
+    }
 }
