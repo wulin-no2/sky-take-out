@@ -1,5 +1,7 @@
 package com.sky.controller.admin;
 
+import com.sky.dto.OrdersCancelDTO;
+import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
@@ -9,10 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("AdminOrderController")
 @Slf4j
@@ -42,5 +41,25 @@ public class OrderController {
         log.info("orders statistics.");
         OrderStatisticsVO orderStatisticsVO = orderService.statisticsOrder();
         return Result.success(orderStatisticsVO);
+    }
+
+    /**
+     * admin cancel Order
+     * @param ordersCancelDTO
+     * @return
+     */
+    @PutMapping("/cancel")
+    @ApiOperation("cancel Order in admin")
+    public Result cancelOrder(@RequestBody OrdersCancelDTO ordersCancelDTO){
+        log.info("cancel Order id: {}",ordersCancelDTO.getId());
+        orderService.adminCancelOrder(ordersCancelDTO);
+        return Result.success();
+    }
+    @PutMapping("/confirm")
+    @ApiOperation("admin confirm order")
+    public Result confirmOrder(@RequestBody OrdersConfirmDTO ordersConfirmDTO){
+        log.info("admin confirm order{}",ordersConfirmDTO.getId());
+        orderService.confirmOrder(ordersConfirmDTO);
+        return Result.success();
     }
 }

@@ -6,9 +6,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.entity.AddressBook;
 import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
@@ -217,5 +215,36 @@ public class OrderServiceImpl implements OrderService {
         orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
         orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
         return orderStatisticsVO;
+    }
+
+    /**
+     * admin Cancel Order
+     * @param ordersCancelDTO
+     */
+    @Override
+    @Transactional
+    public void adminCancelOrder(OrdersCancelDTO ordersCancelDTO) {
+        // get order
+        Orders order = orderMapper.getById(ordersCancelDTO.getId());
+        // set order
+        order.setCancelReason(ordersCancelDTO.getCancelReason());
+        order.setStatus(Orders.CANCELLED);
+        order.setCancelTime(LocalDateTime.now());
+        // update order
+        orderMapper.update(order);
+    }
+
+    /**
+     * admin confirm Order
+     * @param ordersConfirmDTO
+     */
+    @Override
+    public void confirmOrder(OrdersConfirmDTO ordersConfirmDTO) {
+        // get order
+        Orders order = orderMapper.getById(ordersConfirmDTO.getId());
+        // set order
+        order.setStatus(Orders.CONFIRMED);
+        // update order
+        orderMapper.update(order);
     }
 }
