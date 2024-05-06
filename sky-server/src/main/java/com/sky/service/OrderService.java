@@ -10,4 +10,6 @@ public interface OrderService {
     OrderSubmitVO submit(OrdersSubmitDTO ordersSubmitDTO);
 
     LocalDateTime payment(OrdersPaymentDTO ordersPaymentDTO);
+
+    void reminder(Long id);
 }

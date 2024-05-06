@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @RestController("UserOrderController")
 @RequestMapping("/user/order")
@@ -35,11 +36,30 @@ public class OrderController {
         OrderSubmitVO orderSubmitVO = orderService.submit(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
+
+    /**
+     * user pay the order
+     * @param ordersPaymentDTO
+     * @return
+     */
     @PutMapping("/payment")
     @ApiOperation("user pay the order")
     public Result<String> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
         LocalDateTime estimatedTime = orderService.payment(ordersPaymentDTO);
-        return Result.success(String.valueOf(estimatedTime));
 
+        return Result.success(String.valueOf(estimatedTime));
     }
+
+    /**
+     * user reminder order.
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("user reminder order")
+    public Result reminder(@PathVariable Long id){
+        log.info("user reminder order {}.",id);
+        orderService.reminder(id);
+        return Result.success();
+    }
+
 }

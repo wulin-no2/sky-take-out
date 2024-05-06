@@ -1,6 +1,7 @@
 package com.sky.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.OrdersPaymentDTO;
@@ -17,6 +18,7 @@ import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -38,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
     private ShoppingCartMapper shoppingCartMapper;
     @Autowired
     private AddressBookMapper addressBookMapper;
+    @Autowired
+    private WebSocketServer webSocketServer;
     /**
      * user submit order
      * @param ordersSubmitDTO
@@ -99,9 +104,6 @@ public class OrderServiceImpl implements OrderService {
         // insert into orderDetails
         orderDetailMapper.insert(orderDetails);
 
-        // important!! clean shopping cart:
-        shoppingCartMapper.deleteBatchByUserId(currentId);
-
         // create VO and return
         OrderSubmitVO orderSubmitVO = OrderSubmitVO
                 .builder()
@@ -132,6 +134,47 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(order);
         // get order estimatedDeliveryTime;
         Orders orders = orderMapper.getOrderByNumber(ordersPaymentDTO.getOrderNumber());
+
+        // important!! clean shopping cart:
+        // get userId
+        Long currentId = BaseContext.getCurrentId();
+        shoppingCartMapper.deleteBatchByUserId(currentId);
+
+        //send message to server once order successfully via websocket. type orderId content
+        HashMap map = new HashMap();
+        map.put("type",1);// 1 stands for new order; 2 stands for customer reminder
+        map.put("orderId",orders.getId());
+        map.put("content","order number: "+orders.getNumber());
+        // convert to Json
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
+
         return orders.getEstimatedDeliveryTime();
+    }
+
+    /**
+     * user reminder order
+     * @param id
+     */
+    @Override
+    public void reminder(Long id) {
+        // get order by orderId
+        Orders order = orderMapper.getById(id);
+
+        // check if order exists
+        if (order == null){
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        // use websocket to reminder
+        HashMap map = new HashMap();
+        map.put("type",2);
+        map.put("orderId",id);
+        map.put("content","order number:"+order.getNumber());
+
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
+
+
+
     }
 }
