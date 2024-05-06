@@ -95,4 +95,17 @@ public class OrderController {
         orderService.rejectOrder(ordersRejectionDTO);
         return Result.success();
     }
+
+    /**
+     * admin delivery Order
+     * @param id
+     * @return
+     */
+    @PutMapping("/delivery/{id}")
+    @ApiOperation("admin delivery Order")
+    public Result deliveryOrder(@PathVariable Long id){
+        log.info("admin delivery Order id{}",id);
+        orderService.deliveryOrder(id);
+        return Result.success();
+    }
 }

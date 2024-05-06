@@ -258,6 +258,7 @@ public class OrderServiceImpl implements OrderService {
         Orders order = orderMapper.getById(id);
         // set order
         order.setStatus(Orders.COMPLETED);
+        order.setDeliveryTime(LocalDateTime.now());
         // update order
         orderMapper.update(order);
     }
@@ -270,6 +271,16 @@ public class OrderServiceImpl implements OrderService {
         //todo: should the status be completed or canceled?
         order.setStatus(Orders.CANCELLED);
         order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+        // update order
+        orderMapper.update(order);
+    }
+
+    @Override
+    public void deliveryOrder(Long id) {
+        // get order
+        Orders order = orderMapper.getById(id);
+        // set order
+        order.setStatus(Orders.DELIVERY_IN_PROGRESS);
         // update order
         orderMapper.update(order);
     }
