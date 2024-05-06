@@ -4,7 +4,9 @@ import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderStatisticsVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,5 +30,17 @@ public class OrderController {
         log.info("page orders and return in page,{}",ordersPageQueryDTO);
         PageResult pageResult = orderService.pageOrders(ordersPageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * orders statistics
+     * @return
+     */
+    @GetMapping("/statistics")
+    @ApiOperation("orders statistics")
+    public Result<OrderStatisticsVO> statisticOrder(){
+        log.info("orders statistics.");
+        OrderStatisticsVO orderStatisticsVO = orderService.statisticsOrder();
+        return Result.success(orderStatisticsVO);
     }
 }

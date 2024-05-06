@@ -5,12 +5,12 @@ import java.io.Serializable;
 
 @Data
 public class OrderStatisticsVO implements Serializable {
-    //待接单数量
+    //orders to be confirmed
     private Integer toBeConfirmed;
 
-    //待派送数量
+    //orders already confirmed
     private Integer confirmed;
 
-    //派送中数量
+    //orders delivery in progress
     private Integer deliveryInProgress;
 }

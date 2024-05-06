@@ -21,6 +21,7 @@ import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
@@ -177,9 +178,6 @@ public class OrderServiceImpl implements OrderService {
 
         String json = JSON.toJSONString(map);
         webSocketServer.sendToAllClient(json);
-
-
-
     }
 
     /**
@@ -194,5 +192,30 @@ public class OrderServiceImpl implements OrderService {
         long total = orderPage.getTotal();
         List<Orders> result = orderPage.getResult();
         return new PageResult(total, result);
+    }
+
+    /**
+     * Order Statistics
+     * @return
+     */
+
+    @Override
+    public OrderStatisticsVO statisticsOrder() {
+
+        // get confirmed
+        int confirmed = orderMapper.getCountByStatus(Orders.CONFIRMED);
+
+        // get deliveryInProgress
+        int deliveryInProgress = orderMapper.getCountByStatus(Orders.DELIVERY_IN_PROGRESS);
+
+        // get toBeConfirmed
+        int toBeConfirmed = orderMapper.getCountByStatus(Orders.TO_BE_CONFIRMED);
+
+        // return VO
+        OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
+        orderStatisticsVO.setConfirmed(confirmed);
+        orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
+        orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
+        return orderStatisticsVO;
     }
 }
