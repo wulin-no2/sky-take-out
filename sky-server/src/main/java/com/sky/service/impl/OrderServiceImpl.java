@@ -19,6 +19,7 @@ import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.websocket.WebSocketServer;
@@ -263,6 +264,10 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(order);
     }
 
+    /**
+     * admin reject Order
+     * @param ordersRejectionDTO
+     */
     @Override
     public void rejectOrder(OrdersRejectionDTO ordersRejectionDTO) {
         // get order
@@ -275,6 +280,10 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(order);
     }
 
+    /**
+     * admin delivery Order
+     * @param id
+     */
     @Override
     public void deliveryOrder(Long id) {
         // get order
@@ -283,5 +292,32 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Orders.DELIVERY_IN_PROGRESS);
         // update order
         orderMapper.update(order);
+    }
+
+    /**
+     * admin get Order Details
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional
+    public OrderDetailsVO adminOrderDetails(Long id) {
+        // get order
+        Orders order = orderMapper.getById(id);
+        //get orderDetail
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+        //get orderDishes
+        String orderDishes = "";
+        for ( OrderDetail orderDetail: orderDetailList){
+            orderDishes += orderDetail.getName() + ",";
+        }
+        // construct VO
+        OrderDetailsVO orderDetailsVO = new OrderDetailsVO();
+        BeanUtils.copyProperties(order,orderDetailsVO);
+        orderDetailsVO.setOrderDetailList(orderDetailList);
+        orderDetailsVO.setOrderDishes(orderDishes);
+
+        //return
+        return orderDetailsVO;
     }
 }

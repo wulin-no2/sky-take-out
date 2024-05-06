@@ -7,6 +7,7 @@ import com.sky.dto.OrdersRejectionDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderStatisticsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -107,5 +108,12 @@ public class OrderController {
         log.info("admin delivery Order id{}",id);
         orderService.deliveryOrder(id);
         return Result.success();
+    }
+    @GetMapping("/details/{id}")
+    @ApiOperation("admin check order details")
+    public Result<OrderDetailsVO> orderDetails(@PathVariable Long id){
+        log.info("admin check order details: id {}",id);
+        OrderDetailsVO orderDetailsVO = orderService.adminOrderDetails(id);
+        return Result.success(orderDetailsVO);
     }
 }
