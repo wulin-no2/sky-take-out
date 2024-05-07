@@ -102,12 +102,14 @@ public class DishServiceImpl implements DishService {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        for (DishFlavor df: flavors){
-            df.setDishId(dish.getId());
+        if (flavors!=null && !flavors.isEmpty()){
+            for (DishFlavor df: flavors){
+                df.setDishId(dish.getId());
+            }
+            // delete all the flavors, then add all the flavors;
+            dishFlavorMapper.deleteBatchByDishId(dish.getId());
+            dishFlavorMapper.addDishFlavors(flavors);
         }
-        // delete all the flavors, then add all the flavors;
-        dishFlavorMapper.deleteBatchByDishId(dish.getId());
-        dishFlavorMapper.addDishFlavors(flavors);
         // update dish info:
         dishMapper.update(dish);
     }
