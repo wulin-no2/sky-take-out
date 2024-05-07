@@ -15,4 +15,6 @@ public interface ReportMapper {
     Integer getTotalUser(LocalDateTime endTime);
 
     Integer getNewUser(LocalDateTime beginTime, LocalDateTime endTime);
+
+    Integer getOrderCountByMap(Map map);
 }

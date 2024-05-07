@@ -3,8 +3,10 @@ package com.sky.service.impl;
 import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
+import com.sky.vo.OrderReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +99,70 @@ public class ReportServiceImpl implements ReportService {
                 .build();
         return userReportVO;
     }
+
+    /**
+     * order Statistics
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public OrderReportVO orderStatistics(LocalDate begin, LocalDate end) {
+        // get dateList
+        List<LocalDate> dateList = getDateList(begin, end);
+
+        // get orderCountList
+        List<Integer> orderCountList = new ArrayList<>();
+        List<Integer> validOrderCountList = new ArrayList<>();
+        Integer totalOrderCount = 0;
+        Integer validOrderCount = 0;
+        for (LocalDate date : dateList){
+            // get the exact time stamp
+            LocalDateTime beginTime = LocalDateTime.of(date,LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date,LocalTime.MAX);
+            // get order Count Today
+            Map map = new HashMap<>();
+            map.put("begin",beginTime);
+            map.put("end",endTime);
+            Integer orderCountToday = reportMapper.getOrderCountByMap(map);
+            // get total order count
+            totalOrderCount += orderCountToday;
+            // get order count list
+            orderCountList.add(orderCountToday);
+            // get valid order Count Today
+            map.put("status",Orders.COMPLETED);
+            Integer validOrderCountToday = reportMapper.getOrderCountByMap(map);
+            // get valid order count
+            validOrderCount += validOrderCountToday;
+            // get valid order count list
+            validOrderCountList.add(validOrderCountToday);
+        }
+        // get orderCompletionRate
+        Double orderCompletionRate = 0.0;
+        if (totalOrderCount != 0){
+            orderCompletionRate = validOrderCount.doubleValue() / totalOrderCount;
+        }
+        
+        // construct VO
+        OrderReportVO orderReportVO = OrderReportVO
+                .builder()
+                .dateList(StringUtils.join(dateList,","))
+                .orderCountList(StringUtils.join(orderCountList,","))
+                .validOrderCountList(StringUtils.join(validOrderCountList,","))
+                .orderCompletionRate(orderCompletionRate)
+                .totalOrderCount(totalOrderCount)
+                .validOrderCount(validOrderCount)
+                .build();
+        return orderReportVO;
+    }
+
+    /**
+     * helper method to get dateList
+     * @param begin
+     * @param end
+     * @return
+     */
     private List<LocalDate> getDateList(LocalDate begin, LocalDate end){
         //get dateList, to string
         List<LocalDate> dateList = new ArrayList<>();

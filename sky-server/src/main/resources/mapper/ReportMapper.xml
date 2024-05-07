@@ -2,46 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.ReportMapper">
-<!--    <insert id="addDish" useGeneratedKeys="true" keyProperty="id">-->
-<!--        insert into dish(name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)-->
-<!--        VALUES (#{name},#{categoryId},#{price},#{image},#{description},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser});-->
-<!--    </insert>-->
-<!--    <update id="update" parameterType="Dish">-->
-<!--        update Dish-->
-<!--        <set>-->
-<!--            <if test='name != null and name != " "'>name = #{name},</if>-->
-<!--            <if test='categoryId != null'>category_id = #{categoryId},</if>-->
-<!--            <if test='price != null'>price = #{price},</if>-->
-<!--            <if test='image != null'>image = #{image},</if>-->
-<!--            <if test='description != null'>description = #{description},</if>-->
-<!--            <if test='updateTime != null'>update_time = #{updateTime},</if>-->
-<!--            <if test='updateUser != null'>update_user = #{updateUser},</if>-->
-<!--            <if test='status != null'>status = #{status},</if>-->
-<!--        </set>-->
-<!--        where id = #{id}-->
-<!--    </update>-->
-<!--    <delete id="deleteBatch">-->
-<!--        delete from dish where id in-->
-<!--        <foreach collection="ids" item="id" open="(" separator="," close=")">-->
-<!--            #{id}-->
-<!--        </foreach>-->
-<!--    </delete>-->
-<!--    <select id="getDishByPage" resultType="com.sky.entity.Dish">-->
-<!--        select * from dish-->
-<!--        <where>-->
-<!--            <if test='name != null and name != " "'>-->
-<!--                name like concat("%", #{name}, "%")-->
-<!--            </if>-->
-<!--            <if test='categoryId != null'>-->
-<!--                and category_id = #{categoryId}-->
-<!--            </if>-->
-<!--            <if test='status != null'>-->
-<!--                and status = #{status}-->
-<!--            </if>-->
-<!--        </where>-->
-<!--        order by create_time desc-->
-<!--    </select>-->
-
     <select id="getTurnoverByMap" resultType="java.math.BigDecimal">
         select SUM(amount) from orders
                            <where>
@@ -61,8 +21,16 @@
     <select id="getNewUser" resultType="java.lang.Integer">
         select count(id) from user
         <where>
-            <if test="beginTime !=null">create_time &gt;= #{beginTime}</if>
+            <if test="beginTime !=null">and create_time &gt;= #{beginTime}</if>
             <if test="endTime !=null">and create_time &lt;= #{endTime}</if>
+        </where>
+    </select>
+    <select id="getOrderCountByMap" resultType="java.lang.Integer">
+        select count(id) from orders
+        <where>
+            <if test="begin != null">and order_time &gt;= #{begin}</if>
+            <if test="end != null">and order_time &lt;= #{end}</if>
+            <if test="status != null">and status = #{status}</if>
         </where>
     </select>
 </mapper>
