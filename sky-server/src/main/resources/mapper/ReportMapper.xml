@@ -51,4 +51,18 @@
                            </where>
 
     </select>
+    <select id="getTotalUser" resultType="java.lang.Integer">
+        select count(id) from user
+        <where>
+            <if test="endTime !=null">create_time &lt;= #{endTime}</if>
+
+        </where>
+    </select>
+    <select id="getNewUser" resultType="java.lang.Integer">
+        select count(id) from user
+        <where>
+            <if test="beginTime !=null">create_time &gt;= #{beginTime}</if>
+            <if test="endTime !=null">and create_time &lt;= #{endTime}</if>
+        </where>
+    </select>
 </mapper>

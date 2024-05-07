@@ -4,6 +4,7 @@ import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,16 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportMapper reportMapper;
 
+    /**
+     * turnover Statistics
+     * @param begin
+     * @param end
+     * @return
+     */
     @Override
     public TurnoverReportVO turnoverStatistics(LocalDate begin, LocalDate end) {
         //get dateList, to string
-        List<LocalDate> dateList = new ArrayList<>();
-        dateList.add(begin);
-        while (!Objects.equals(begin, end)) {
-            begin = begin.plusDays(1);
-            dateList.add(begin);
-        }
+        List<LocalDate> dateList = getDateList(begin, end);
         String dateListS = StringUtils.join(dateList,",");
         //get turnoverList, to string
         List<BigDecimal> turnoverList = new ArrayList<>();
@@ -57,5 +59,52 @@ public class ReportServiceImpl implements ReportService {
                 .turnoverList(turnoverListS)
                 .build();
         return turnoverReportVO;
+    }
+
+    /**
+     * user Statistics
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public UserReportVO userStatistics(LocalDate begin, LocalDate end) {
+        // get dateList
+        List<LocalDate> dateList = getDateList(begin, end);
+
+        // get total user list and new user list
+        List<Integer> totalUserList = new ArrayList<>();
+        List<Integer> newUserList = new ArrayList<>();
+        for (LocalDate date: dateList){
+            // get the exact time stamp
+            LocalDateTime beginTime = LocalDateTime.of(date,LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date,LocalTime.MAX);
+
+            // get total users this day
+            Integer totalUser = reportMapper.getTotalUser(endTime);
+            totalUserList.add(totalUser);
+
+            //get new users this day
+            Integer newUser = reportMapper.getNewUser(beginTime, endTime);
+            newUserList.add(newUser);
+        }
+        // construct VO
+        UserReportVO userReportVO = UserReportVO
+                .builder()
+                .dateList(StringUtils.join(dateList,","))
+                .totalUserList(StringUtils.join(totalUserList,","))
+                .newUserList(StringUtils.join(newUserList,","))
+                .build();
+        return userReportVO;
+    }
+    private List<LocalDate> getDateList(LocalDate begin, LocalDate end){
+        //get dateList, to string
+        List<LocalDate> dateList = new ArrayList<>();
+        dateList.add(begin);
+        while (!Objects.equals(begin, end)) {
+            begin = begin.plusDays(1);
+            dateList.add(begin);
+        }
+        return dateList;
     }
 }

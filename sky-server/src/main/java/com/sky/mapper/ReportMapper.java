@@ -11,4 +11,8 @@ import java.util.Map;
 public interface ReportMapper {
 
     BigDecimal getTurnoverByMap(Map map);
+
+    Integer getTotalUser(LocalDateTime endTime);
+
+    Integer getNewUser(LocalDateTime beginTime, LocalDateTime endTime);
 }
