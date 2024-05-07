@@ -112,7 +112,7 @@ public class OrderController {
     }
     @GetMapping("/details/{id}")
     @ApiOperation("admin check order details")
-    public Result<OrderVO> orderDetails(@PathVariable Long id){
+    public Result<OrderVO> orderDetails(@PathVariable String id){
         log.info("admin check order details: id {}",id);
         OrderVO orderVO = orderService.orderDetails(id);
         return Result.success(orderVO);

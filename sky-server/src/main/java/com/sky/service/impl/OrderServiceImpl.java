@@ -19,7 +19,6 @@ import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ShoppingCartMapper;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
-import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
@@ -87,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setUserId(currentId);
         orders.setOrderTime(LocalDateTime.now());
         // TODO: how to set Address??
-        orders.setAddress(addressBook.getCityName()+addressBook.getDistrictName()
+        orders.setAddress(addressBook.getProvinceName()+addressBook.getCityName()+addressBook.getDistrictName()
         +addressBook.getDetail());
         orders.setPhone(addressBook.getPhone());
         orders.setUserName(shoppingCart.getName());
@@ -310,11 +309,26 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public OrderVO orderDetails(Long id) {
-        // get order
-        Orders order = orderMapper.getById(id);
+    public OrderVO orderDetails(String id) {
+//         if id is null
+        Orders order;
+        Long idLong = 0L;
+        if (id.equals("null")){
+            // return newest order
+            Long userId = BaseContext.getCurrentId();
+            // get order by UserId
+            order = orderMapper.getNewestOrderByUserId(userId);
+            idLong = order.getId();
+        }
+        else {
+            // get order
+            idLong = Long.parseLong(id);
+            order = orderMapper.getById(idLong);
+        }
+//        Orders order = orderMapper.getById(id);
+
         //get orderDetail
-        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(idLong);
         //get orderDishes
         String orderDishes = "";
         for ( OrderDetail orderDetail: orderDetailList){

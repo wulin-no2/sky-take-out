@@ -4,18 +4,15 @@ import com.sky.dto.*;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
-import com.sky.vo.OrderDetailsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 @RestController("UserOrderController")
 @RequestMapping("/user/order")
@@ -69,7 +66,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/orderDetail/{id}")
-    public Result<OrderVO> orderDetails(@PathVariable Long id){
+    public Result<OrderVO> orderDetails(@PathVariable String id){
         log.info("user get order details{}",id);
         OrderVO orderVO = orderService.orderDetails(id);
         return Result.success(orderVO);

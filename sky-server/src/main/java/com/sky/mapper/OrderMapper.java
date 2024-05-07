@@ -26,4 +26,6 @@ public interface OrderMapper {
     int getCountByStatus(Integer status);
 
     Page<Orders> pageHistoryOrders(Integer status, Long userId);
+@Select("select * from orders where user_id=#{userId} order by order_time desc limit 1")
+    Orders getNewestOrderByUserId(Long userId);
 }

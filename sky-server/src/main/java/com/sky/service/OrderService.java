@@ -30,7 +30,7 @@ public interface OrderService {
 
     void deliveryOrder(Long id);
 
-    OrderVO orderDetails(Long id);
+    OrderVO orderDetails(String id);
 
     PageResult pageHistoryOrders(int page, int pageSize, Integer status);
 
