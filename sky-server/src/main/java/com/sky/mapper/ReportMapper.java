@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.sky.dto.GoodsSalesDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
@@ -17,4 +18,6 @@ public interface ReportMapper {
     Integer getNewUser(LocalDateTime beginTime, LocalDateTime endTime);
 
     Integer getOrderCountByMap(Map map);
+
+    List<GoodsSalesDTO> getSalesTopStatistics(LocalDateTime beginTime, LocalDateTime endTime);
 }

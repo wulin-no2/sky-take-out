@@ -1,9 +1,11 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import io.swagger.models.auth.In;
@@ -17,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -121,20 +124,26 @@ public class ReportServiceImpl implements ReportService {
             // get the exact time stamp
             LocalDateTime beginTime = LocalDateTime.of(date,LocalTime.MIN);
             LocalDateTime endTime = LocalDateTime.of(date,LocalTime.MAX);
+
             // get order Count Today
             Map map = new HashMap<>();
             map.put("begin",beginTime);
             map.put("end",endTime);
             Integer orderCountToday = reportMapper.getOrderCountByMap(map);
+
             // get total order count
             totalOrderCount += orderCountToday;
+
             // get order count list
             orderCountList.add(orderCountToday);
+
             // get valid order Count Today
             map.put("status",Orders.COMPLETED);
             Integer validOrderCountToday = reportMapper.getOrderCountByMap(map);
+
             // get valid order count
             validOrderCount += validOrderCountToday;
+
             // get valid order count list
             validOrderCountList.add(validOrderCountToday);
         }
@@ -143,7 +152,7 @@ public class ReportServiceImpl implements ReportService {
         if (totalOrderCount != 0){
             orderCompletionRate = validOrderCount.doubleValue() / totalOrderCount;
         }
-        
+
         // construct VO
         OrderReportVO orderReportVO = OrderReportVO
                 .builder()
@@ -156,6 +165,36 @@ public class ReportServiceImpl implements ReportService {
                 .build();
         return orderReportVO;
     }
+
+    /**
+     * Sales Top 10 Statistics
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Override
+    public SalesTop10ReportVO salesTopStatistics(LocalDate begin, LocalDate end) {
+
+        // get exact time stamp
+        LocalDateTime beginTime = LocalDateTime.of(begin,LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end,LocalTime.MAX);
+
+        // each dish's sale volume  from order_detail and order is valid
+        List<GoodsSalesDTO> goodsSalesDTOList = reportMapper.getSalesTopStatistics(beginTime,endTime);
+        // get nameList
+        List<String> nameList = goodsSalesDTOList.stream().map(a -> a.getName()).collect(Collectors.toList());
+        // get numberList
+        List<Integer> numberList = goodsSalesDTOList.stream().map(a -> a.getNumber()).collect(Collectors.toList());
+
+        // construct VO
+        SalesTop10ReportVO salesTop10ReportVO = SalesTop10ReportVO
+                .builder()
+                .nameList(StringUtils.join(nameList,","))
+                .numberList(StringUtils.join(numberList,","))
+                .build();
+        return salesTop10ReportVO;
+    }
+
 
     /**
      * helper method to get dateList
