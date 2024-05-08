@@ -20,4 +20,8 @@ public interface ReportMapper {
     Integer getOrderCountByMap(Map map);
 
     List<GoodsSalesDTO> getSalesTopStatistics(LocalDateTime beginTime, LocalDateTime endTime);
+
+    Integer countDishByMap(Map map);
+
+    Integer countSetmealByMap(Map map);
 }

@@ -46,4 +46,19 @@
         limit 10
 
     </select>
+    <select id="countDishByMap" resultType="java.lang.Integer">
+            select count(id) from dish
+            <where>
+                <if test="status != null">and status = #{status}</if>
+                <if test="categoryId != null">and category_id = #{categoryId}</if>
+            </where>
+
+    </select>
+    <select id="countSetmealByMap" resultType="java.lang.Integer">
+        select count(id) from setmeal
+        <where>
+            <if test="status != null">and status = #{status}</if>
+            <if test="categoryId != null">and category_id = #{categoryId}</if>
+        </where>
+    </select>
 </mapper>
