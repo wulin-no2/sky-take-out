@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.aliyuncs.http.HttpResponse;
 import com.sky.result.Result;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController
@@ -83,5 +85,18 @@ public class ReportController {
         log.info("sales Top 10 Statistics from {} to {} ",begin,end);
         SalesTop10ReportVO salesTop10ReportVO = reportService.salesTopStatistics(begin,end);
         return Result.success(salesTop10ReportVO);
+    }
+
+    /**
+     * export excel file of recent 30 days data
+     * @param response
+     * @return
+     */
+    @GetMapping("/export")
+    @ApiOperation("export excel file of recent 30 days data")
+    public Result export(HttpServletResponse response){
+        log.info("export excel file of recent 30 days data");
+        reportService.export(response);
+        return Result.success();
     }
 }

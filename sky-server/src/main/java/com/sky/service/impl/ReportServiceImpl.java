@@ -4,16 +4,22 @@ import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.ReportMapper;
 import com.sky.service.ReportService;
-import com.sky.vo.OrderReportVO;
-import com.sky.vo.SalesTop10ReportVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
+import com.sky.service.WorkspaceService;
+import com.sky.vo.*;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +32,8 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportMapper reportMapper;
+    @Autowired
+    private WorkspaceService workspaceService;
 
     /**
      * turnover Statistics
@@ -193,6 +201,72 @@ public class ReportServiceImpl implements ReportService {
                 .numberList(StringUtils.join(numberList,","))
                 .build();
         return salesTop10ReportVO;
+    }
+
+    /**
+     * export business data
+     * @param response
+     */
+
+    @Override
+    public void export(HttpServletResponse response) {
+        // get data
+        LocalDateTime beginTime = LocalDateTime.of(
+                LocalDate.now().minusDays(30), LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(
+                LocalDate.now().minusDays(1), LocalTime.MAX);
+        BusinessDataVO businessDataVO = workspaceService.getBusinessData(
+                beginTime,endTime);
+
+        // write to Excel file via POI
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("template/operation_data_report_template.xlsx");
+
+        try {
+            // create a new file based on template
+            XSSFWorkbook excel = new XSSFWorkbook(in);
+
+            // get sheet
+            XSSFSheet sheet = excel.getSheet("Sheet1");
+            // fill data
+            sheet.getRow(1).getCell(1).setCellValue("Time from "+beginTime+" to "+endTime);
+            // row 4
+            XSSFRow row = sheet.getRow(3);
+            row.getCell(2).setCellValue(businessDataVO.getTurnover());
+            row.getCell(4).setCellValue(businessDataVO.getOrderCompletionRate());
+            row.getCell(6).setCellValue(businessDataVO.getNewUsers());
+            // row 5
+            row = sheet.getRow(4);
+            row.getCell(2).setCellValue(businessDataVO.getValidOrderCount());
+            row.getCell(4).setCellValue(businessDataVO.getUnitPrice());
+            // row 8 - Fill in detailed data
+
+            for (int i = 0; i < 30; i++) {
+                LocalDateTime todayBegin = beginTime.plusDays(i);
+                LocalDateTime todayEnd = LocalDateTime.of(todayBegin.toLocalDate(),LocalTime.MAX);
+
+                // get data today
+                BusinessDataVO businessData = workspaceService.getBusinessData(todayBegin,todayEnd);
+                // fill data
+                row = sheet.getRow(7 + i);
+                row.getCell(1).setCellValue(todayBegin.toString());
+                row.getCell(2).setCellValue(businessData.getTurnover());
+                row.getCell(3).setCellValue(businessData.getValidOrderCount());
+                row.getCell(4).setCellValue(businessData.getOrderCompletionRate());
+                row.getCell(5).setCellValue(businessData.getUnitPrice());
+                row.getCell(6).setCellValue(businessData.getNewUsers());
+            }
+
+            // download file through outStream to web browser
+            ServletOutputStream outputStream = response.getOutputStream();
+            excel.write(outputStream);
+
+            // close resources
+            outputStream.close();
+            excel.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
